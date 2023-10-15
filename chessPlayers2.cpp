@@ -160,7 +160,7 @@ int main() {
 	char aux5[MAX_CHARS]; // Title
 	char aux6[MAX_CHARS]; // Yob
 	int r; // entrada do usuario //nome do arquivo de saida
-	char csv[19], temp[4];
+	char csv[19], temp[4]; //19 = max de caracteres do nome do arquivo
 	setlocale(LC_ALL, "Portuguese"); // inicio-leitura do arquivo
 
 	ifstream fin("players_raw.csv");
@@ -174,7 +174,7 @@ int main() {
 
 		fin.getline(buff, MAX_CHARS_LINE);
 
-		while (fin.getline(buff, MAX_CHARS_LINE) && j < 6229) {
+		while (fin.getline(buff, MAX_CHARS_LINE)) {
 			i = 0;
 
 			substring(buff, aux1, i, ';'); //ID
@@ -242,7 +242,37 @@ int main() {
 					player* aux = l->getInicio();
 					while (aux) {
 						field = aux->getGender();
-						if (field == temp[0]){
+						if (field == temp[0]) {
+							fout << aux->getOrder() << ";";
+							fout << aux->getId() << ";";
+							fout << aux->getName() << ";";
+							fout << aux->getFederation() << ";";
+							fout << aux->getGender() << ";";
+							fout << aux->getTitle() << ";";
+							fout << aux->getYob() << endl;
+							aux = aux->getProx();
+						}
+					}
+					fout.close();
+				}
+				else
+					cout << "Nao conseguiu abrir o arquivo de escrita!";
+			}
+			else if (r == 3) {
+				strcpy(csv, "Title_");
+				cout << "Insira a Titulacao desejada: ";
+				cin >> temp;
+				strcat(csv, temp);
+				strcat(csv, ".csv");
+				ofstream fout(csv); //Inicio-Escrita do arquivo de saida
+				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
+				{
+					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
+					char field[3]; //title
+					player* aux = l->getInicio();
+					while (aux) {
+						strcpy(field, aux->getTitle());
+						if (strcmp(field, temp) == 0) {
 							fout << aux->getOrder() << ";";
 							fout << aux->getId() << ";";
 							fout << aux->getName() << ";";
@@ -268,6 +298,7 @@ int main() {
 		cout << "Nao conseguiu abrir o arquivo de leitura!";
 
 	fin.close();
+	delete aux;
 	delete l; // exclui o ponteiro
 
 	return 0;
