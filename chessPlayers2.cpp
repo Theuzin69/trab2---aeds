@@ -207,7 +207,7 @@ int main() {
 				ofstream fout(csv); //Inicio-Escrita do arquivo de saida
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
-					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
+					fout << "order;fide_id;name;federation;gender;title;yob" << endl;
 					char f[4]; //federation
 					player* aux = l->getInicio();
 					while (aux) {
@@ -239,7 +239,7 @@ int main() {
 				ofstream fout(csv); //Inicio-Escrita do arquivo de saida
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
-					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
+					fout << "order;fide_id;name;federation;gender;title;yob" << endl;
 					char g; //gender 
 					player* aux = l->getInicio();
 					while (aux) {
@@ -271,7 +271,7 @@ int main() {
 				ofstream fout(csv); //Inicio-Escrita do arquivo de saida
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
-					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
+					fout << "order;fide_id;name;federation;gender;title;yob" << endl;
 					char t[3]; //title
 					player* aux = l->getInicio();
 					while (aux) {
