@@ -1,16 +1,17 @@
 ﻿/*Programa que gera arquivos a partir de outro arquivo chamado "players_raw.csv",
 filtrando seus valores de acordo com a entrada do usuario.
-Utiliza listas encadeadas com ponteiro apenas para o inicio, e para o proximo no.
+Utiliza listas encadeadas com ponteiro para o inicio e fim, e nós com ponteiro para o proximo nó.
 Integrantes: Gabriel Ajeje, Jessica, Luiz Otavio, Matheus, Vanessa
 Inicio: 04/10/2023 Entrega:16/10/2023*/
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <ctime>
 using namespace std;
-const int MAX_CHARS_LINE = 100;
-const int MAX_CHARS = 60;
+const int MAX_CHARS_LINE = 200;
+const int MAX_CHARS = 200;
 
-class player // noh da lista encadeada
+class player // nó da lista encadeada
 {
 private:
 	player* prox;
@@ -36,12 +37,14 @@ public:
 
 	player* getProx();
 	void setProx(player* _prox);
+	void setOrder(int _order);
 };
 
 class lista // lista ¯\_(ツ)_/¯
 {
 private:
 	player* inicio;
+	player* fim;
 public:
 	lista();
 	bool vazia();
@@ -88,11 +91,12 @@ int player::getYob() { return yob; }
 
 player* player::getProx() { return prox; }
 void player::setProx(player* _prox) { prox = _prox; }
+void player::setOrder(int _order) { order = _order; }
 
 // metodos da classe lista
-lista::lista() { inicio = 0; }
+lista::lista() { inicio = 0; fim = 0; }
 
-bool lista::vazia() { return inicio == 0; }
+bool lista::vazia() { return inicio == 0 && fim == 0; }
 player* lista::getInicio() { return inicio; }
 void lista::imprime() {
 	player* aux = inicio;
@@ -111,13 +115,13 @@ void lista::insereFim(int _order, int _id, char* _name, char* _federation,
 	char _gender, char* _title, int _yob) {
 	player* jogador = new player(_order, _id, _name, _federation, _gender, _title, _yob);
 
-	if (vazia())
+	if (vazia()) {
 		inicio = jogador;
+		fim = jogador;
+	}
 	else {
-		player* aux = inicio;
-		while (aux->getProx())
-			aux = aux->getProx();
-		aux->setProx(jogador);
+		fim->setProx(jogador);
+		fim = jogador;
 	}
 }
 lista::~lista() {
@@ -173,7 +177,6 @@ int main() {
 		int i, j = 0;
 
 		fin.getline(buff, MAX_CHARS_LINE);
-
 		while (fin.getline(buff, MAX_CHARS_LINE)) {
 			i = 0;
 
@@ -187,14 +190,11 @@ int main() {
 
 			j++; //Order
 		}
+		
 
 		do {
+			j = 0; // parâmetro do "order"
 			menu();
-			/* << "Gerar arquivo de jogadores por: " << endl
-			   << "1 - Federacao" << endl
-			   << "2 - Genero" << endl
-			   << "3 - Titulo" << endl
-			   << "0 - Sair do programa" << endl;*/
 			cin >> r;
 
 			if (r == 1) //escolheu "Federacao"
@@ -208,11 +208,12 @@ int main() {
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
 					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
-					char field[4]; //federation
+					char f[4]; //federation
 					player* aux = l->getInicio();
 					while (aux) {
-						strcpy(field, aux->getFederation());
-						if (strcmp(field, temp) == 0) {
+						strcpy(f, aux->getFederation());
+						if (strcmp(f, temp) == 0) {
+							aux->setOrder(j+1);
 							fout << aux->getOrder() << ";";
 							fout << aux->getId() << ";";
 							fout << aux->getName() << ";";
@@ -220,8 +221,9 @@ int main() {
 							fout << aux->getGender() << ";";
 							fout << aux->getTitle() << ";";
 							fout << aux->getYob() << endl;
-							aux = aux->getProx();
+							j++;
 						}
+						aux = aux->getProx();
 					}
 					fout.close();
 				}
@@ -238,11 +240,12 @@ int main() {
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
 					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
-					char field; //gender
+					char g; //gender 
 					player* aux = l->getInicio();
 					while (aux) {
-						field = aux->getGender();
-						if (field == temp[0]) {
+						g = aux->getGender();
+						if (g == temp[0]) {
+							aux->setOrder(j+1);
 							fout << aux->getOrder() << ";";
 							fout << aux->getId() << ";";
 							fout << aux->getName() << ";";
@@ -250,8 +253,9 @@ int main() {
 							fout << aux->getGender() << ";";
 							fout << aux->getTitle() << ";";
 							fout << aux->getYob() << endl;
-							aux = aux->getProx();
+							j++;
 						}
+						aux = aux->getProx();
 					}
 					fout.close();
 				}
@@ -268,11 +272,12 @@ int main() {
 				if (fout.is_open()) // Checa se arquivo de saida abriu corretamente
 				{
 					fout << "order; fide_id; name; federation; gender; title; yob" << endl;
-					char field[3]; //title
+					char t[3]; //title
 					player* aux = l->getInicio();
 					while (aux) {
-						strcpy(field, aux->getTitle());
-						if (strcmp(field, temp) == 0) {
+						strcpy(t, aux->getTitle());
+						if (strcmp(t, temp) == 0) {
+							aux->setOrder(j + 1);
 							fout << aux->getOrder() << ";";
 							fout << aux->getId() << ";";
 							fout << aux->getName() << ";";
@@ -280,8 +285,9 @@ int main() {
 							fout << aux->getGender() << ";";
 							fout << aux->getTitle() << ";";
 							fout << aux->getYob() << endl;
-							aux = aux->getProx();
+							j++;
 						}
+						aux = aux->getProx();
 					}
 					fout.close();
 				}
@@ -289,16 +295,12 @@ int main() {
 					cout << "Nao conseguiu abrir o arquivo de escrita!";
 			}
 		}
-
-
 		while (r > 0 && r < 4);
-
 	}
 	else
 		cout << "Nao conseguiu abrir o arquivo de leitura!";
 
 	fin.close();
-	delete aux;
 	delete l; // exclui o ponteiro
 
 	return 0;
